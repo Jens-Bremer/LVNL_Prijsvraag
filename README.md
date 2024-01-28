@@ -21,7 +21,7 @@ Each team should consist of two students, both should be a member of the VSV. If
 ## Data:
 Mogelijke bronnen waar we data vandaan kunnen halen.
 
-  - [ADS-B exchange](https://www.adsbexchange.com/products/historical-data/) (per 5 sec) paid. Alleen data van eerste van iedere maand. Aanvraag ingedient om alle data van 2023 te krijgen.
+  - [ADS-B exchange](https://www.adsbexchange.com/products/historical-data/) (per 5 sec) paid. Alleen data van eerste van iedere maand. Aanvraag ingediend om alle data van 2023 te krijgen.
   - [CBS Vliegbewegingen](https://www.cbs.nl/nl-nl/visualisaties/verkeer-en-vervoer/verkeer/vliegbewegingen) (per maand) Eig waardeloos
   - [OpenSky](https://opensky-network.org/data/impala) Lijkt de meeste potentie te hebben. Gratis data? Account maken lukt vooralsnog niet.
   - [Dutch Plane Spotters](https://schiphol.dutchplanespotters.nl/?date=2023-11-01) Alleen commerciele vluchten
