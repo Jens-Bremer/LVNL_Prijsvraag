@@ -44,5 +44,18 @@ Opgeslagen in JSON bestanden, zoals hieronder. Voorbeeld van 1 Januari 2023 `000
 
 Probleem: 5256000 tijdstappen, kaulo veel data
 
+1) Verkrijg data
+	1) [Zie Data hierboven](#data)
+2) Data analyse
+	1) Data cleaning and preprocessing
+		- Ervoor zorgen dat de data clean is (bijv. geen ontbrekende waarden, juiste formaten).
+	2) Data parsing
+		- Convert time naar een format dat leesbaar is voor Python (zoals datetime) en zorg ervoor dat de tijdzones consistent zijn.
+	3) Analysis
+		- Bereken het aantal starts en landingen voor elk uur. (wat telt als landing en hoe detecteer je die)
+	4) Finding maximum
+		- Hoogste aantal landingen per uur
+
+
 ### Tools:
 [traffic](https://github.com/xoolive/traffic) A toolbox for processing and analyzing air traffic data in python
