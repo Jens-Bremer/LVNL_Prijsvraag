@@ -1,14 +1,12 @@
-# LVNL_Prijsvraag
- Max en Jens to Airspace World Geneva!
-
- 
- 
 ---
-## Context
+created:
+---
+---
+## Prijsvraag
 
 Air Traffic Control The Netherlands (LVNL) has asked the VSV 'Leonardo da Vinci' to host a competition among TU Delft Aerospace students. The competition consists of one question. The team that answers it correctly will win entrance and transport to and from the Airspace World Conference in Geneva. The question is as follows: ‘**What is the maximum number of take-offs and landings (added up) that Schiphol handled within one hour in 2023?**’. Every team shall consist of two persons (who have a VSV membership). The link to fill in your answer is in the link in the bio. Deadline is February 15th at 17:00! Good luck!!
 
-[[https://forms.office.com/e/7Bh8RAvJQp|Answer form]]
+[Answer form](https://forms.office.com/e/7Bh8RAvJQp) 
 
 Dear student, Air Traffic Control The Netherlands (LVNL) has asked the VSV 'Leonardo da Vinci' to host a competition among TU Delft Aerospace students. The competition consists of one question. The team that answers it correctly will win the following prize:  
   
@@ -23,9 +21,10 @@ Each team should consist of two students, both should be a member of the VSV. If
 ## Data:
 Mogelijke bronnen waar we data vandaan kunnen halen.
 
-[ADS-B exchange](https://www.adsbexchange.com/products/historical-data/) (per 5 sec) paid. Alleen data van eerste van iedere maand. Aanvraag ingedient om alle data van 2023 te krijgen.
-[CBS Vliegbewegingen](https://www.cbs.nl/nl-nl/visualisaties/verkeer-en-vervoer/verkeer/vliegbewegingen) (per maand) Eig waardeloos
-[OpenSky](https://opensky-network.org/data/impala) Lijkt de meeste potentie te hebben. Gratis data? Account maken lukt vooralsnog niet.
+  - [ADS-B exchange](https://www.adsbexchange.com/products/historical-data/) (per 5 sec) paid. Alleen data van eerste van iedere maand. Aanvraag ingediend om alle data van 2023 te krijgen.
+  - [CBS Vliegbewegingen](https://www.cbs.nl/nl-nl/visualisaties/verkeer-en-vervoer/verkeer/vliegbewegingen) (per maand) Eig waardeloos
+  - [OpenSky](https://opensky-network.org/data/impala) Lijkt de meeste potentie te hebben. Gratis data? Account maken lukt vooralsnog niet.
+  - [Dutch Plane Spotters](https://schiphol.dutchplanespotters.nl/?date=2023-11-01) Alleen commerciele vluchten
 
 
 #### ADS-B data
@@ -46,4 +45,4 @@ Opgeslagen in JSON bestanden, zoals hieronder. Voorbeeld van 1 Januari 2023 `000
 Probleem: 5256000 tijdstappen, kaulo veel data
 
 ### Tools:
-[traffic](https://github.com/xoolive/traffic) A toolbox for processing and analyzing air traffic data
+[traffic](https://github.com/xoolive/traffic) A toolbox for processing and analyzing air traffic data in python
