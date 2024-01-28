@@ -1,7 +1,4 @@
 ---
-created:
----
----
 ## Prijsvraag
 
 Air Traffic Control The Netherlands (LVNL) has asked the VSV 'Leonardo da Vinci' to host a competition among TU Delft Aerospace students. The competition consists of one question. The team that answers it correctly will win entrance and transport to and from the Airspace World Conference in Geneva. The question is as follows: ‘**What is the maximum number of take-offs and landings (added up) that Schiphol handled within one hour in 2023?**’. Every team shall consist of two persons (who have a VSV membership). The link to fill in your answer is in the link in the bio. Deadline is February 15th at 17:00! Good luck!!
