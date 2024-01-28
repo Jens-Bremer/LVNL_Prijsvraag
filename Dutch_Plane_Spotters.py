@@ -4,7 +4,6 @@ import numpy as np
 import requests
 from bs4 import BeautifulSoup
 def find_movements(date): #Date in yyyy-mm-dd
-    arrival_url = "https://schiphol.dutchplanespotters.nl/?date=2023-11-01"+date
     arrival_url = "https://schiphol.dutchplanespotters.nl/?date="+date
     arrival_table = pd.read_html(arrival_url)
     departure_url = "https://schiphol.dutchplanespotters.nl/departures.php?date="+date
@@ -13,19 +12,24 @@ def find_movements(date): #Date in yyyy-mm-dd
 
     timevalues_arrival = arrival_table[0]['Arrival']['ETA']
     flightnums_arrival = arrival_table[0]['Arrival']['FLIGHTNR']
+    status_arrival = arrival_table[0]['Arrival']['Status']
+
     timevalues_departure = departure_table[0]['ETD']
     flightnums_departure = departure_table[0]['FLIGHTNR']
+    status_departure = departure_table[0]['Status']
+    del arrival_table
+    del departure_table
 
     flightdata = []
     for i in range(len(timevalues_arrival)):
-        if arrival_table[0]['Arrival']['Status'][i] != 'Cancelled':
+        if status_arrival[i] != 'Cancelled':
             flightdata.append([datetime.strptime(timevalues_arrival[i], "%H:%M").time(), flightnums_arrival[i], 'Arrival'])
 
     for i in range(len(timevalues_departure)):
-        if departure_table[0]['Status'][i] != 'Cancelled':
+        if status_departure[i] != 'Cancelled':
             flightdata.append([datetime.strptime(timevalues_departure[i], "%H:%M").time(), flightnums_departure[i], 'Departure'])
 
-    flightdata=sorted(flightdata)
+    # flightdata=sorted(flightdata) To improve runtime, this is smarter
     flightdata=np.array(flightdata)
     movement_dict = {}
 
