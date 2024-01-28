@@ -1,15 +1,16 @@
+import matplotlib
+matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import pandas as pd
 from datetime import datetime, time, timedelta
 import numpy as np
-import requests
-from bs4 import BeautifulSoup
-def find_movements(date: str, interval: int): #Date in yyyy-mm-dd, interval in minutes
+
+
+def find_movements(date: str, interval: int):  # Date in yyyy-mm-dd, interval in minutes
     arrival_url = "https://schiphol.dutchplanespotters.nl/?date="+date
     arrival_table = pd.read_html(arrival_url)
     departure_url = "https://schiphol.dutchplanespotters.nl/departures.php?date="+date
     departure_table = pd.read_html(departure_url)
-
 
     timevalues_arrival = arrival_table[0]['Arrival']['ETA']
     flightnums_arrival = arrival_table[0]['Arrival']['FLIGHTNR']
@@ -34,11 +35,11 @@ def find_movements(date: str, interval: int): #Date in yyyy-mm-dd, interval in m
     flightdata=np.array(flightdata)
     movement_dict = {}
 
-    for hr in range(0,24):
+    for hr in range(0, 24):
         for min in range(0, 60, interval):
             current_time = time(hour=hr, minute=min)
-            end_time = time(hour=(hr+1)%24, minute=min)
-            movements = len([True for tijd in flightdata[:,0] if tijd >= current_time and tijd < end_time])
+            end_time = time(hour=(hr+1) % 24, minute=min)
+            movements = len([True for tijd in flightdata[:, 0] if current_time <= tijd < end_time])
             movement_dict[f'{hr}:{min}'] = movements
 
     max_key = max(movement_dict, key=movement_dict.get)
@@ -68,5 +69,5 @@ for day in date_strings:
 max_day = max(year_dict, key=year_dict.get)
 print(f'Maximum amount of movements was {year_dict[max_day]} and this occurred in an hour starting at {max_day}')
 
-plt.plot(year_dict.values())
+plt.plot(list(range(len(year_dict))),[year_dict[key] for key in list(year_dict.keys())])
 plt.show()
