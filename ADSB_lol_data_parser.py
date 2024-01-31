@@ -95,7 +95,8 @@ def analyze_altitude_changes(filtered_traces):
         for point in trace['trace']:
             timestamp, icao, _, altitude = point[0], trace['icao'], point[2], point[3]
             current_state = 'airborne' if isinstance(altitude, int) else 'ground'
-
+            # TODO: Gebeurt het ooit dat er geen altitude wordt gegeven, zonder dat het vliegtuig werkelijk op de grond staat?
+            # TODO: Als hier 1 foutieve status uit komt zorgt het voor 2 extra gemeten bewegingen
             # Check for a state change (either from ground to airborne or vice versa)
             if previous_state and previous_state != current_state:
                 event_type = 'departed' if current_state == 'airborne' else 'arrived'
