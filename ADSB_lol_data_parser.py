@@ -37,49 +37,50 @@ def filter_trace(trace):
     return filtered_trace
 
 
-# Pattern to match all relevant gzip-compressed JSON files in subdirectories
-file_pattern = 'Data/v2023.08.10-planes-readsb-staging-0/traces/**/trace_full_*.json'
+def filter_all_data(file_pattern, output_to_json=False):
+    # Find all files matching the pattern
+    files = list(glob.glob(file_pattern, recursive=True))
+    total_files = len(files)
 
-# Find all files matching the pattern
-files = list(glob.glob(file_pattern, recursive=True))
-total_files = len(files)
+    # Select % of the files randomly for processing
+    percentage_to_process = 1
+    files_to_process = random.sample(files, int(total_files * percentage_to_process))
 
-# Select % of the files randomly for processing
-percentage_to_process = 1
-files_to_process = random.sample(files, int(total_files * percentage_to_process))
+    # Initialize a list to hold filtered trace data
+    filtered_traces = []
 
-# Initialize a list to hold filtered trace data
-filtered_traces = []
+    # Process each selected file
+    for i, file_path in enumerate(files_to_process, start=1):
+        # Open, decompress, and read each JSON file
+        with gzip.open(file_path, 'rt', encoding='utf-8') as file:
+            try:
+                data = json.load(file)
+                # Filter the trace for points within the bounding box
+                filtered_trace = filter_trace(data['trace'])
+                if filtered_trace:
+                    # Save only the filtered trace points
+                    filtered_traces.append({'icao': data['icao'], 'registration': data.get('r', None), 'trace': filtered_trace})
+            except json.JSONDecodeError as e:
+                print(f"\nError decoding JSON in {file_path}: {e}", file=sys.stderr)
+            except Exception as e:
+                print(f"\nAn error occurred with file {file_path}: {e}", file=sys.stderr)
 
-# Process each selected file
-for i, file_path in enumerate(files_to_process, start=1):
-    # Open, decompress, and read each JSON file
-    with gzip.open(file_path, 'rt', encoding='utf-8') as file:
-        try:
-            data = json.load(file)
-            # Filter the trace for points within the bounding box
-            filtered_trace = filter_trace(data['trace'])
-            if filtered_trace:
-                # Save only the filtered trace points
-                filtered_traces.append({'icao': data['icao'], 'registration': data.get('r', None), 'trace': filtered_trace})
-        except json.JSONDecodeError as e:
-            print(f"\nError decoding JSON in {file_path}: {e}", file=sys.stderr)
-        except Exception as e:
-            print(f"\nAn error occurred with file {file_path}: {e}", file=sys.stderr)
+        # Print progress every 100 files
+        print(f"\rProcessing file {i} of {len(files_to_process)}...", end='')
+        sys.stdout.flush()
 
-    # Print progress every 100 files
-    print(f"\rProcessing file {i} of {len(files_to_process)}...", end='')
-    sys.stdout.flush()
+    # Ensure the final message is on a new line
+    print(f"\nFiltered {len(filtered_traces)} planes with points near Schiphol.")
 
-# Ensure the final message is on a new line
-print(f"\nFiltered {len(filtered_traces)} planes with points near Schiphol.")
+    if output_to_json:
+        # Save the filtered trace data to a JSON file
+        output_file = 'filtered_traces_near_schiphol.json'
+        with open(output_file, 'w', encoding='utf-8') as f:
+            json.dump(filtered_traces, f, ensure_ascii=False, indent=4)
 
-# Save the filtered trace data to a JSON file
-output_file = 'filtered_traces_near_schiphol.json'
-with open(output_file, 'w', encoding='utf-8') as f:
-    json.dump(filtered_traces, f, ensure_ascii=False, indent=4)
+        print(f"Filtered trace data saved to {output_file}")
 
-print(f"Filtered trace data saved to {output_file}")
+    return filtered_traces
 
 
 # %%
@@ -109,23 +110,22 @@ def analyze_altitude_changes(filtered_traces):
     return events
 
 
-events = analyze_altitude_changes(filtered_traces)
+def print_total_movements(events):
+    # Initialize counters for arrivals and departures
+    arrivals_count = 0
+    departures_count = 0
 
-# Initialize counters for arrivals and departures
-arrivals_count = 0
-departures_count = 0
+    # Loop through the events to count arrivals and departures
+    for event in events:
+        if event['event'] == 'arrived':
+            arrivals_count += 1
+        elif event['event'] == 'departed':
+            departures_count += 1
 
-# Loop through the events to count arrivals and departures
-for event in events:
-    if event['event'] == 'arrived':
-        arrivals_count += 1
-    elif event['event'] == 'departed':
-        departures_count += 1
-
-# Print the counts
-print(f"\nArrivals: {arrivals_count}")
-print(f"Departures: {departures_count}")
-print(f"Total movements: {arrivals_count + departures_count}\n")
+    # Print the counts
+    print(f"\nArrivals: {arrivals_count}")
+    print(f"Departures: {departures_count}")
+    print(f"Total movements: {arrivals_count + departures_count}\n")
 
 
 # %%
@@ -162,8 +162,14 @@ def find_busiest_hour(events):
 
     return busiest_start_time, arrivals_during_busiest, departures_during_busiest, busiest_count
 
+# %% Main
 
-# Find the busiest hour
+
+# Pattern to match all relevant gzip-compressed JSON files in subdirectories
+file_pattern = 'Data/v2023.08.10-planes-readsb-staging-0/traces/**/trace_full_*.json'
+filtered_traces = filter_all_data(file_pattern)
+events = analyze_altitude_changes(filtered_traces)
+print_total_movements(events)
 busiest_hour_start, arrivals, departures, total_events = find_busiest_hour(events)
 
 # Print the results
