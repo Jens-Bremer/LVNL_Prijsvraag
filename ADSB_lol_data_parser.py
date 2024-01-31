@@ -65,11 +65,12 @@ def filter_all_data(file_pattern, output_to_json=False):
             except Exception as e:
                 print(f"\nAn error occurred with file {file_path}: {e}", file=sys.stderr)
 
-        # Print progress every 100 files
-        print(f"\rProcessing file {i} of {len(files_to_process)}...", end='')
-        sys.stdout.flush()
+        # Print progress every 250 files
+        if i % 250 == 0:
+            print(f"\rProcessing file {i} of {len(files_to_process)}...", end='')
+            sys.stdout.flush()
 
-    # Ensure the final message is on a new line
+    print(f"\rProcessing file {i} of {len(files_to_process)}...", end='')
     print(f"\nFiltered {len(filtered_traces)} planes with points near Schiphol.")
 
     if output_to_json:
@@ -101,7 +102,7 @@ def analyze_altitude_changes(filtered_traces):
                 events.append({
                     'timestamp': timestamp,
                     'icao': icao,
-                    'registration': trace.get('registration', None),  # Assuming registration is a key; use 'N/A' if not present
+                    'registration': trace.get('registration', None),
                     'event': event_type
                 })
 
@@ -165,16 +166,31 @@ def find_busiest_hour(events):
 # %% Main
 
 
-# Pattern to match all relevant gzip-compressed JSON files in subdirectories
-file_pattern = 'Data/v2023.08.10-planes-readsb-staging-0/traces/**/trace_full_*.json'
-filtered_traces = filter_all_data(file_pattern)
-events = analyze_altitude_changes(filtered_traces)
-print_total_movements(events)
-busiest_hour_start, arrivals, departures, total_events = find_busiest_hour(events)
+top_5 = ["2023.08.10", "2023.10.09", "2023.07.14", "2023.07.20", "2023.08.07"]
+results = [["date", 'total movements', 'busiest hour', 'arrivals', 'departures']]
 
-# Print the results
-# print(f"Busiest hour starts at: {busiest_hour_start.strftime('%Y-%m-%d %H:%M:%S')}")
-print(f"Busiest hour starts at: {busiest_hour_start.strftime('%H:%M:%S')}")
-print(f"Arrivals during busiest hour: {arrivals}")
-print(f"Departures during busiest hour: {departures}")
-print(f"Total events during busiest hour: {total_events}")
+for date in top_5:
+    # Pattern to match all relevant gzip-compressed JSON files in subdirectories
+    file_pattern = f'Data/{date}/v{date}-planes-readsb-prod-0/traces/**/trace_full_*.json'
+    filtered_traces = filter_all_data(file_pattern)
+    events = analyze_altitude_changes(filtered_traces)
+    print_total_movements(events)
+    busiest_hour_start, arrivals, departures, total_events = find_busiest_hour(events)
+
+    results.append([date, total_events, busiest_hour_start.strftime('%H:%M:%S'), arrivals, departures])
+    # Print the results
+    # print(f"Busiest hour starts at: {busiest_hour_start.strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"Busiest hour starts at: {busiest_hour_start.strftime('%H:%M:%S')}")
+    print(f"Arrivals during busiest hour: {arrivals}")
+    print(f"Departures during busiest hour: {departures}")
+    print(f"Total events during busiest hour: {total_events}")
+
+
+# Save results to txt. since that is the best format to store data xD
+filename = 'results.txt'
+
+with open(filename, 'w') as file:
+    for item in results:
+        file.write(f"{item}\n")
+
+print(f"Results have been written to {filename}")
